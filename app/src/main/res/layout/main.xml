@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:gravity="top|center_vertical"
+	android:orientation="vertical">
+
+	<LinearLayout
+		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:orientation="horizontal">
+
+		<EditText
+			android:layout_height="wrap_content"
+			android:inputType="textPersonName"
+			android:layout_width="wrap_content"
+			android:ems="10"
+			android:id="@+id/letter_edit"/>
+
+		<Button
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:text="确认"
+			android:id="@+id/OK_button"/>
+
+	</LinearLayout>
+
+	<TextView
+		android:text="请键入字母后点击确认。"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:id="@+id/textView"/>
+
+</LinearLayout>
+
