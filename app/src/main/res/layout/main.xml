@@ -4,7 +4,8 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:gravity="top|center_vertical"
-	android:orientation="vertical">
+	android:orientation="vertical"
+	android:fitsSystemWindows="true">
 
 	<LinearLayout
 		android:layout_height="wrap_content"
@@ -16,18 +17,20 @@
 			android:inputType="textPersonName"
 			android:layout_width="wrap_content"
 			android:ems="10"
-			android:id="@+id/letter_edit"/>
+			android:id="@+id/letter_edit"
+			android:layout_weight="1"/>
 
 		<Button
 			android:layout_height="wrap_content"
 			android:layout_width="wrap_content"
-			android:text="确认"
-			android:id="@+id/OK_button"/>
+			android:text="清除"
+			android:id="@+id/delete_all"
+			android:layout_weight="0"/>
 
 	</LinearLayout>
 
 	<TextView
-		android:text="请键入字母后点击确认。"
+		android:text="请键入想要计算的字母，按回车键来确认。"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:id="@+id/textView"/>

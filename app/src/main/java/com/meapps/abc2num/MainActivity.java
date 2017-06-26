@@ -14,19 +14,26 @@ public class MainActivity extends Activity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-		final Button okButton=(Button)findViewById(R.id.OK_button);
+		final Button deleteAllButton=(Button)findViewById(R.id.delete_all);
 		final EditText letterEdit=(EditText)findViewById(R.id.letter_edit);
 		final TextView resultText=(TextView)findViewById(R.id.textView);
-		okButton.setOnClickListener(new View.OnClickListener(){
+		deleteAllButton.setOnClickListener(new View.OnClickListener(){
 			@Override
 			public void onClick(View view){
-				final String input=letterEdit.getText().toString().toUpperCase();
+				letterEdit.setText("");
+				
+			}
+		});
+		letterEdit.setOnEditorActionListener(new TextView.OnEditorActionListener(){
+			@Override
+			public boolean onEditorAction(TextView p1,int p2,KeyEvent p3){
+				final String input=p1.getText().toString().toUpperCase();
 				if(input.isEmpty()){
-					resultText.setText("未发现输入的字母。");
-					return;
+					resultText.setText("请键入想要计算的字母，按回车键来确认。");
+					return true;
 				}
 				int result=0;
-				
+
 				for(int now=0;now<input.length();now++){
 					switch(input.substring(now,now+1)){
 						case "Z":
@@ -108,11 +115,12 @@ public class MainActivity extends Activity
 							result+=25;
 							break;
 						default:
-						Toast.makeText(MainActivity.this,"已自动忽略非字母！",Toast.LENGTH_SHORT).show();
-						//resultText.setText(input.substring(now,now+1));
+							Toast.makeText(MainActivity.this,"已自动忽略非字母！",Toast.LENGTH_SHORT).show();
+							//resultText.setText(input.substring(now,now+1));
 					}
 				}
 				resultText.setText(String.valueOf(result));
+				return true;
 			}
 		});
     }
