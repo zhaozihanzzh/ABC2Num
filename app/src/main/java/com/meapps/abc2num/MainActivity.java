@@ -6,39 +6,55 @@ import android.widget.*;
 import android.view.View.*;
 import android.view.*;
 import java.util.*;
+import android.text.*;
+import android.support.v7.widget.Toolbar;
+import android.support.v7.app.*;
 
-public class MainActivity extends Activity 
+public class MainActivity extends AppCompatActivity 
 {
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        Toolbar toolbar=(Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        
 		final Button deleteAllButton=(Button)findViewById(R.id.delete_all);
 		final EditText letterEdit=(EditText)findViewById(R.id.letter_edit);
 		final TextView resultText=(TextView)findViewById(R.id.textView);
-		deleteAllButton.setOnClickListener(new View.OnClickListener(){
+        deleteAllButton.setOnClickListener(new View.OnClickListener(){
 			@Override
-			public void onClick(View view){
+            public void onClick(View view){
 				letterEdit.setText("");
-				
 			}
 		});
-		letterEdit.setOnEditorActionListener(new TextView.OnEditorActionListener(){
-			@Override
-			public boolean onEditorAction(TextView p1,int p2,KeyEvent p3){
-				final String input=p1.getText().toString().toUpperCase();
+		letterEdit.addTextChangedListener(new TextWatcher(){
+
+                @Override
+                public void beforeTextChanged(CharSequence p1, int p2, int p3, int p4) {
+                    // TODO: Implement this method
+                }
+
+                @Override
+                public void onTextChanged(CharSequence p1, int p2, int p3, int p4) {
+                    // TODO: Implement this method
+                }
+
+                @Override
+                public void afterTextChanged(Editable p1) {
+                    // TODO: Implement this method
+            	final String input=p1.toString().toUpperCase();
 				if(input.isEmpty()){
-					resultText.setText("请键入想要计算的字母，按回车键来确认。");
-					return true;
+					resultText.setText("");
+					return;
 				}
 				int result=0;
+                boolean isAllLetter=true;
 
 				for(int now=0;now<input.length();now++){
 					switch(input.substring(now,now+1)){
-						case "Z":
-							result+=26;
-							break;
+                        
 						case "A":
 							result+=1;
 							break;
@@ -114,13 +130,18 @@ public class MainActivity extends Activity
 						case "Y":
 							result+=25;
 							break;
+                        case "Z":
+                            result+=26;
+							break;
 						default:
-							Toast.makeText(MainActivity.this,"已自动忽略非字母！",Toast.LENGTH_SHORT).show();
-							//resultText.setText(input.substring(now,now+1));
+                        isAllLetter=false;
 					}
 				}
 				resultText.setText(String.valueOf(result));
-				return true;
+                if(!isAllLetter){
+                    letterEdit.setError("已自动忽略非字母！");
+                }
+			    
 			}
 		});
     }
