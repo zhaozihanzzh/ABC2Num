@@ -1,14 +1,14 @@
 package com.meapps.abc2num;
 
-import android.app.*;
 import android.os.*;
-import android.widget.*;
-import android.view.View.*;
-import android.view.*;
-import java.util.*;
-import android.text.*;
-import android.support.v7.widget.Toolbar;
 import android.support.v7.app.*;
+import android.support.v7.widget.*;
+import android.text.*;
+import android.view.*;
+import android.widget.*;
+import android.content.*;
+import android.net.*;
+import android.preference.*;
 
 public class MainActivity extends AppCompatActivity 
 {
@@ -19,6 +19,12 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.main);
         Toolbar toolbar=(Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        
+        SharedPreferences preferences=PreferenceManager.getDefaultSharedPreferences(this);
+        if(preferences.getBoolean("first_boot",true)){
+            showAboutDialog();
+            preferences.edit().putBoolean("first_boot",false).commit();
+        }
         
 		final Button deleteAllButton=(Button)findViewById(R.id.delete_all);
 		final EditText letterEdit=(EditText)findViewById(R.id.letter_edit);
@@ -43,8 +49,7 @@ public class MainActivity extends AppCompatActivity
 
                 @Override
                 public void afterTextChanged(Editable p1) {
-                    // TODO: Implement this method
-            	final String input=p1.toString().toUpperCase();
+                final String input=p1.toString().toUpperCase();
 				if(input.isEmpty()){
 					resultText.setText("");
 					return;
@@ -133,6 +138,13 @@ public class MainActivity extends AppCompatActivity
                         case "Z":
                             result+=26;
 							break;
+						case " ":
+						case ",":
+						case ".":
+						case "?":
+						case "!":
+						case "\"":
+							break;
 						default:
                         isAllLetter=false;
 					}
@@ -144,5 +156,35 @@ public class MainActivity extends AppCompatActivity
 			    
 			}
 		});
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.item_about:
+                showAboutDialog();
+                break;
+            default:
+        }
+        return true;
+    }
+    private void showAboutDialog(){
+        AlertDialog.Builder aboutDialog=new AlertDialog.Builder(this);
+        aboutDialog.setCancelable(true).setIcon(R.drawable.ic_launcher)
+        .setTitle("关于").setMessage(R.string.about)
+        .setNeutralButton("源代码",new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface p1,int p2){
+                Uri uri=Uri.parse("https://github.com/zhaozihanzzh/ABC2Num");
+                startActivity(new Intent(Intent.ACTION_VIEW,uri));
+            }
+        })
+        .setNegativeButton("好",null).show();
     }
 }
