@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="bing_image_settings">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    <string-array name="bing_image_names">
+        <item>不加载</item>
+        <item>仅在WLAN下</item>
+        <item>始终加载</item>
+    </string-array>
+</resources>

@@ -1,4 +1,4 @@
-package com.meapps.abc2num;
+package com.meapps.abc2num.activities;
 
 import android.content.*;
 import android.content.pm.*;
@@ -15,31 +15,36 @@ import java.io.*;
 import java.net.*;
 
 import android.support.v7.widget.Toolbar;
+import com.meapps.abc2num.*;
+import android.net.wifi.*;
 
 public class MainActivity extends AppCompatActivity {
+    private SharedPreferences preferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        App.addActivity(this);
+
         setContentView(R.layout.main);
-        Toolbar toolbar=(Toolbar)findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        SharedPreferences preferences=PreferenceManager.getDefaultSharedPreferences(this);
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
         int installedVersion = -1;
 		try {
-			final int VERSION=getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
+			final int VERSION = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
 
             installedVersion = preferences.getInt("install_version", -1);
-            if(installedVersion < VERSION) {
+            if (installedVersion < VERSION) {
                 showChangeLogDialog();
                 preferences.edit().putInt("install_version", VERSION).commit();
             }
-        } catch(PackageManager.NameNotFoundException e) {}
 
-		if(installedVersion == -1) {
-			showAboutDialog();
-			preferences.edit().putBoolean("first_boot", false).commit();
-		}
+            if (installedVersion == -1) {
+                showAboutDialog();
+            }
+        } catch (PackageManager.NameNotFoundException e) {}
+
 
 		final Button deleteAllButton=(Button)findViewById(R.id.delete_all);
 		final EditText letterEdit=(EditText)findViewById(R.id.letter_edit);
@@ -65,114 +70,27 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void afterTextChanged(Editable p1) {
                     final String input=p1.toString().toUpperCase();
-                    if(input.isEmpty()) {
+                    if (input.isEmpty()) {
                         resultText.setText("");
                         return;
                     }
-                    int result=0;
-                    boolean isAllLetter=true;
-
-                    for(int now=0;now < input.length();now++) {
-                        switch(input.substring(now, now + 1)) {
-
-                            case "A":
-                                result += 1;
-                                break;
-                            case "B":
-                                result += 2;
-                                break;
-                            case "C":
-                                result += 3;
-                                break;
-                            case "D":
-                                result += 4;
-                                break;
-                            case "E":
-                                result += 5;
-                                break;
-                            case "F":
-                                result += 6;
-                                break;
-                            case "G":
-                                result += 7;
-                                break;
-                            case "H":
-                                result += 8;
-                                break;
-                            case "I":
-                                result += 9;
-                                break;
-                            case "J":
-                                result += 10;
-                                break;
-                            case "K":
-                                result += 11;
-                                break;
-                            case "L":
-                                result += 12;
-                                break;
-                            case "M":
-                                result += 13;
-                                break;
-                            case "N":
-                                result += 14;
-                                break;
-                            case "O":
-                                result += 15;
-                                break;
-                            case "P":
-                                result += 16;
-                                break;
-                            case "Q":
-                                result += 17;
-                                break;
-                            case "R":
-                                result += 18;
-                                break;
-                            case "S":
-                                result += 19;
-                                break;
-                            case "T":
-                                result += 20;
-                                break;
-                            case "U":
-                                result += 21;
-                                break;
-                            case "V":
-                                result += 22;
-                                break;
-                            case "W":
-                                result += 23;
-                                break;
-                            case "X":
-                                result += 24;
-                                break;
-                            case "Y":
-                                result += 25;
-                                break;
-                            case "Z":
-                                result += 26;
-                                break;
-                            case " ":
-                            case ",":
-                            case ".":
-                            case "?":
-                            case "!":
-                            case "\"":
-                                break;
-                            default:
-                                isAllLetter = false;
-                        }
-                    }
+                    int result = ABC2NumCore.adc2Num(input);
                     resultText.setText(String.valueOf(result));
-                    if(!isAllLetter) {
-                        letterEdit.setError("已自动忽略非字母！");
-                    }
-
                 }
             });
-        loadBingImage();
+        String loadImage = preferences.getString("bing_image", "1");
+        LogUtils.d("loadImage= " + loadImage);
+        if (loadImage.equals("2") || (loadImage.equals("1") && isWiFiConnected())) {
+            loadBingImage();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        App.removeActivity(this);
+    }
+
 
 
     @Override
@@ -183,13 +101,18 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.item_about:
                 showAboutDialog();
                 break;
 
             case R.id.item_changelog:
                 showChangeLogDialog();
+                break;
+
+            case R.id.item_settings:
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(intent);
                 break;
             default:
         }
@@ -218,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
             is.close();
             String result = new String(buffer, "utf8");
             builder.setTitle("更新日志").setMessage(result).setPositiveButton("好", null).create().show();
-        } catch(IOException e) {} 
+        } catch (IOException e) {} 
     }
     private void loadBingImage() {
         new Thread(new Runnable(){
@@ -236,24 +159,23 @@ public class MainActivity extends AppCompatActivity {
                         connection.setReadTimeout(8000);
                         InputStream in = connection.getInputStream();
                         StringBuilder response = new StringBuilder();
-                        
+
                         reader = new BufferedReader(new InputStreamReader(in));
                         while ((content = reader.readLine()) != null) {
                             response.append(content);
                         }
                         content = response.toString();
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
-                    }
-                    finally {
-                        if (reader != null){
+                    } finally {
+                        if (reader != null) {
                             try {
                                 reader.close();
-                            } catch(IOException e) {
+                            } catch (IOException e) {
                                 e.printStackTrace();
                             }
                         }
-                        if(connection != null){
+                        if (connection != null) {
                             connection.disconnect();
                         }
                     }
@@ -261,12 +183,16 @@ public class MainActivity extends AppCompatActivity {
                 }
             }).start();
     }
-    private void showBingImage(final String content){
+    private void showBingImage(final String content) {
         runOnUiThread(new Runnable(){
-            @Override
-            public void run() {
-                Glide.with(MainActivity.this).load(content).into((ImageView)findViewById(R.id.bing_image));
-            }
-        });
+                @Override
+                public void run() {
+                    Glide.with(MainActivity.this).load(content).into((ImageView)findViewById(R.id.bing_image));
+                }
+            });
+    }
+    private boolean isWiFiConnected() {
+        WifiManager wifiManager = (WifiManager)getSystemService(Context.WIFI_SERVICE);
+        return wifiManager.isWifiEnabled() && wifiManager.getConnectionInfo().getIpAddress() != 0;
     }
 }

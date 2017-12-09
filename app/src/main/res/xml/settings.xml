@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="设置">
+    <ListPreference
+        android:title="必应每日一图"
+        android:key="bing_image"
+        android:entryValues="@array/bing_image_settings"
+        android:entries="@array/bing_image_names"
+        android:defaultValue="1"/>
+    <CheckBoxPreference
+        android:title="夜间模式"
+        android:key="dark_mode"/>
+</PreferenceScreen>
