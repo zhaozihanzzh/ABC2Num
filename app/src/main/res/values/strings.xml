@@ -4,5 +4,5 @@
     <string name="app_name">ABC2Num</string>
     <string name="about">本程序可将英文26字母转换成数字再求和。\n©图片来源于Bing搜索。</string>
     <string name="settings">设置</string>
-
+    <string name="sc_disabled">已禁用功能</string>
 </resources>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="settings"
+        android:enabled="true"
+        android:icon="@drawable/ic_launcher_settings"
+        android:shortcutShortLabel="@string/settings"
+        android:shortcutLongLabel="@string/settings"
+        android:shortcutDisabledMessage="@string/sc_disabled">
+        <!--shortcutLongLabel 是配置的长名称, launcher会优先选择长名称显示
+        shortcutShortLabel 是配置的短名称, 如果长名称显示不下, 就显示短名称。-->
+        
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.meapps.abc2num"
+            android:targetClass="com.meapps.abc2num.activities.SettingsActivity" />
+        <categories android:name="android.shortcut.conversation"/>
+    </shortcut>
+</shortcuts>
