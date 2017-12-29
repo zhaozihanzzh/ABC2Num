@@ -17,8 +17,10 @@ import java.net.*;
 import android.support.v7.widget.Toolbar;
 import com.meapps.abc2num.*;
 import android.net.wifi.*;
+import android.Manifest;
 
 public class MainActivity extends AppCompatActivity {
+    private final int LOAD_BING_REQUEST = 1;
     private SharedPreferences preferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +83,10 @@ public class MainActivity extends AppCompatActivity {
         String loadImage = preferences.getString("bing_image", "1");
         LogUtils.d("loadImage= " + loadImage);
         if (loadImage.equals("2") || (loadImage.equals("1") && isWiFiConnected())) {
-            loadBingImage();
+            if(App.getPermissionGranted(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE, LOAD_BING_REQUEST)){
+                loadBingImage();
+            }
+            // Ask for permission first. Load images as soon as request code is allowed.
         }
     }
 
@@ -143,7 +148,29 @@ public class MainActivity extends AppCompatActivity {
             builder.setTitle("更新日志").setMessage(result).setPositiveButton("好", null).create().show();
         } catch (IOException e) {} 
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch(requestCode){
+            case LOAD_BING_REQUEST:
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    loadBingImage();
+                }
+                else {
+                    AlertDialog.Builder warning = new AlertDialog.Builder(MainActivity.this);
+                    warning.setTitle("提示").setCancelable(true).setMessage("存储权限被拒绝，将无法加载图片。").setPositiveButton(android.R.string.ok, null).setNeutralButton("授权", new DialogInterface.OnClickListener(){
+                            @Override
+                            public void onClick(DialogInterface p1, int p2){
+                                startActivity(App.getDetailPermission(getPackageName()));
+                            }
+                        }).create().show();
+                }
+        }
+    }
+    
     private void loadBingImage() {
+        LogUtils.d("Start loading Bing Image.");
         new Thread(new Runnable(){
                 @Override
                 public void run() {
@@ -182,6 +209,7 @@ public class MainActivity extends AppCompatActivity {
                     showBingImage(content);
                 }
             }).start();
+            
     }
     private void showBingImage(final String content) {
         runOnUiThread(new Runnable(){
