@@ -223,7 +223,9 @@ public class MainActivity extends AppCompatActivity {
         runOnUiThread(new Runnable(){
                 @Override
                 public void run() {
-                    Glide.with(MainActivity.this).load(content).into((ImageView)findViewById(R.id.bing_image));
+                    if(!isDestroyed()) {
+                        Glide.with(MainActivity.this).load(content).into((ImageView)findViewById(R.id.bing_image));
+                    }
                 }
             });
     }
