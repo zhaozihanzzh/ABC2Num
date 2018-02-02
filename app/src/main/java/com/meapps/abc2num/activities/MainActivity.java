@@ -20,12 +20,16 @@ import android.net.wifi.*;
 import android.Manifest;
 
 public class MainActivity extends AppCompatActivity {
+    private boolean isDarkMode = false;
     private final int LOAD_BING_REQUEST = 1;
     private SharedPreferences preferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         App.addActivity(this);
+        isDarkMode = getIntent().getBooleanExtra("dark_mode", isDarkMode);
+        LogUtils.d("Dark:" + isDarkMode);
+        AppCompatDelegate.setDefaultNightMode(isDarkMode ? 1 : 2);
 
         setContentView(R.layout.main);
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
@@ -76,12 +80,16 @@ public class MainActivity extends AppCompatActivity {
                         resultText.setText("");
                         return;
                     }
+                    if (input.length() > 80000){
+                        resultText.setText("字符串长度超出限制！");
+                        return;
+                    }
                     int result = ABC2NumCore.adc2Num(input);
                     resultText.setText(String.valueOf(result));
                 }
             });
         String loadImage = preferences.getString("bing_image", "1");
-        LogUtils.d("loadImage= " + loadImage);
+        LogUtils.d("loadImage = " + loadImage);
         if (loadImage.equals("2") || (loadImage.equals("1") && isWiFiConnected())) {
             if(App.getPermissionGranted(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE, LOAD_BING_REQUEST)){
                 loadBingImage();
