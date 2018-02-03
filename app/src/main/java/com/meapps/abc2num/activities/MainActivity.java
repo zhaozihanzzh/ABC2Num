@@ -18,11 +18,13 @@ import android.support.v7.widget.Toolbar;
 import com.meapps.abc2num.*;
 import android.net.wifi.*;
 import android.Manifest;
+import android.support.design.widget.*;
 
 public class MainActivity extends AppCompatActivity {
     private boolean isDarkMode = false;
     private final int LOAD_BING_REQUEST = 1;
     private SharedPreferences preferences;
+    private boolean onBackDown = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -232,5 +234,28 @@ public class MainActivity extends AppCompatActivity {
     private boolean isWiFiConnected() {
         WifiManager wifiManager = (WifiManager)getSystemService(Context.WIFI_SERVICE);
         return wifiManager.isWifiEnabled() && wifiManager.getConnectionInfo().getIpAddress() != 0;
+    }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode != KeyEvent.KEYCODE_BACK){
+            return super.onKeyDown(keyCode, event);
+        }
+        if(onBackDown){
+            App.finishAll();
+        }
+        Snackbar.make(getCurrentFocus(), "再按一次返回键退出程序。", Snackbar.LENGTH_SHORT).show();
+        onBackDown = true;
+        new Thread(new Runnable(){
+            @Override
+            public void run(){
+                try{
+                    Thread.sleep(3000);
+                    onBackDown = false;
+                    // It seems that we must put onBackDown = false here.
+                 } catch (InterruptedException e) {}
+            }
+        }).start();
+        
+        return false;
     }
 }
