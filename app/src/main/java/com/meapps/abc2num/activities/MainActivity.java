@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         App.addActivity(this);
         isDarkMode = getIntent().getBooleanExtra("dark_mode", isDarkMode);
         LogUtils.d("Dark:" + isDarkMode);
-        AppCompatDelegate.setDefaultNightMode(isDarkMode ? 1 : 2);
+        //AppCompatDelegate.setDefaultNightMode(isDarkMode ? 1 : 2);
 
         setContentView(R.layout.main);
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);

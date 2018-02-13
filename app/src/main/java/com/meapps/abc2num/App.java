@@ -1,12 +1,14 @@
 package com.meapps.abc2num;
 import android.app.*;
 import android.content.*;
-import android.net.*;
-import java.util.*;
-import android.provider.*;
-import android.support.v4.content.*;
 import android.content.pm.*;
+import android.net.*;
+import android.preference.*;
 import android.support.v4.app.*;
+import android.support.v4.content.*;
+import android.support.v7.app.*;
+import com.meapps.abc2num.activities.*;
+import java.util.*;
 
 public class App extends Application {
     private static List<Activity> mActivities = new ArrayList<>();
@@ -40,5 +42,11 @@ public class App extends Application {
         detailPermission.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
         detailPermission.setData(Uri.fromParts("package", packageName, null));
         return detailPermission;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        AppCompatDelegate.setDefaultNightMode(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("dark_mode", false)?AppCompatDelegate.MODE_NIGHT_YES:AppCompatDelegate.MODE_NIGHT_NO);
     }
 }
