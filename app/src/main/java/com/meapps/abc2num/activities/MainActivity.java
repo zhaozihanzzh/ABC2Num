@@ -21,7 +21,6 @@ import android.Manifest;
 import android.support.design.widget.*;
 
 public class MainActivity extends AppCompatActivity {
-    private boolean isDarkMode = false;
     private final int LOAD_BING_REQUEST = 1;
     private SharedPreferences preferences;
     private boolean onBackDown = false;
@@ -29,9 +28,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         App.addActivity(this);
-        isDarkMode = getIntent().getBooleanExtra("dark_mode", isDarkMode);
-        LogUtils.d("Dark:" + isDarkMode);
-        //AppCompatDelegate.setDefaultNightMode(isDarkMode ? 1 : 2);
 
         setContentView(R.layout.main);
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);

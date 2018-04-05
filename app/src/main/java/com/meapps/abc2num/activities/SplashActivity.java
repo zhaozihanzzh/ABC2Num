@@ -9,8 +9,6 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-        //AppCompatDelegate.setDefaultNightMode(PreferenceManager.getDefaultSharedPreferences(SplashActivity.this).getBoolean("dark_mode", false)?1:2);
-        //intent.putExtra("dark_mode", PreferenceManager.getDefaultSharedPreferences(SplashActivity.this).getBoolean("dark_mode", false));
         startActivity(intent);
         finish();
     }
